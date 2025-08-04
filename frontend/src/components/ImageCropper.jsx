@@ -19,6 +19,10 @@ const ImageCropper = ({ image, onCropComplete, onCancel }) => {
   }, [])
 
   const handleSave = () => {
+    if (!croppedAreaPixels) {
+      alert('Please crop the image first')
+      return
+    }
     onCropComplete(croppedAreaPixels)
   }
 
@@ -110,4 +114,4 @@ const ImageCropper = ({ image, onCropComplete, onCancel }) => {
   )
 }
 
-export default ImageCropper
+export default ImageCropper;

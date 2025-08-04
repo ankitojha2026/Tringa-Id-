@@ -1,0 +1,26 @@
+{
+    "name": "tiranga-id-generator/backend",
+    "description": "Backend for Tiranga ID Generator - Government Style Digital Identity System",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "endroid/qr-code": "^4.7",
+        "intervention/image": "^2.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TirangaId\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"echo 'Tiranga ID Backend installed successfully!\\n';\""
+        ]
+    }
+}

@@ -131,7 +131,7 @@ const PrivacyPolicy = () => {
                     <i className="fas fa-exclamation-triangle me-2"></i>
                     महत्वपूर्ण अस्वीकरण | Important Disclaimer
                   </h4>
-                  <hr className="border-warning">
+                  <hr className="border-warning"/>
                   <p className="mb-0">
                     <strong>यह एक व्यक्तिगत/शैक्षणिक परियोजना है</strong> जो डिजिटल पहचान पत्र बनाने के लिए मनोरंजन और व्यक्तिगत उपयोग के लिए है। 
                     यह कोई आधिकारिक सरकारी दस्तावेज नहीं है और इसका उपयोग किसी भी आधिकारिक उद्देश्य के लिए नहीं किया जाना चाहिए।

@@ -12,7 +12,6 @@ const HomePage = () => {
     bloodGroup: 'O+',
     role: 'नागरिक | Citizen'
   })
-  const [imageFile, setImageFile] = useState(null)
   const [imageSrc, setImageSrc] = useState('')
   const [showCropper, setShowCropper] = useState(false)
   const [croppedImage, setCroppedImage] = useState('')
@@ -31,7 +30,6 @@ const HomePage = () => {
     const file = e.target.files[0]
     if (file && file.size <= 5 * 1024 * 1024) {
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        setImageFile(file)
         const reader = new FileReader()
         reader.onload = () => {
           setImageSrc(reader.result)
@@ -76,7 +74,7 @@ const HomePage = () => {
     )
 
     return new Promise(resolve => {
-      canvas.toBlob(resolve, 'image/jpeg', 0.8)
+      canvas.toBlob(resolve, 'image/jpeg', 0.9)
     })
   }
 
@@ -98,6 +96,16 @@ const HomePage = () => {
       return
     }
 
+    // Client-side validation
+    if (formData.name.length < 2 || formData.name.length > 100) {
+      alert('नाम 2 से 100 अक्षरों के बीच होना चाहिए | Name must be between 2 and 100 characters')
+      return
+    }
+    if (!/^[6-9][0-9]{9}$/.test(formData.mobile)) {
+      alert('कृपया वैध 10-अंकीय मोबाइल नंबर दर्ज करें | Please enter a valid 10-digit mobile number starting with 6-9')
+      return
+    }
+
     setIsLoading(true)
     
     try {
@@ -107,30 +115,28 @@ const HomePage = () => {
       formDataToSend.append('city', formData.city)
       formDataToSend.append('bloodGroup', formData.bloodGroup)
       formDataToSend.append('role', formData.role)
-      
-      const response = await fetch(croppedImage)
-      const blob = await response.blob()
-      formDataToSend.append('profileImage', blob, 'profile.jpg')
 
-      const apiResponse = await axios.post('http://localhost:8000/api/generate-id.php', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      // Log FormData for debugging
+      console.log('Sending FormData:', Object.fromEntries(formDataToSend))
+
+      const apiResponse = await axios.post('http://localhost/tringa/backend/api/generate-id.php', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       })
+
+      console.log('API Response:', apiResponse.data)
 
       if (apiResponse.data.success) {
         setGeneratedCard({
           ...formData,
           profileImage: croppedImage,
-          tirangaId: apiResponse.data.tirangaId,
-          qrCodeData: apiResponse.data.qrCodeData
+          tirangaId: apiResponse.data.data.tiranga_id
         })
       } else {
-        alert('ID जनरेट करने में त्रुटि | Error generating ID: ' + apiResponse.data.message)
+        alert(`ID जनरेट करने में त्रुटि | Error generating ID: ${apiResponse.data.message}`)
       }
     } catch (error) {
-      console.error('Error:', error)
-      alert('ID कार्ड जनरेट करने में त्रुटि | Error generating ID card')
+      console.error('API Error:', error.response?.data || error.message)
+      alert(`ID कार्ड जनरेट करने में त्रुटि | Error generating ID card: ${error.response?.data?.message || 'Network error'}`)
     } finally {
       setIsLoading(false)
     }
@@ -138,18 +144,105 @@ const HomePage = () => {
 
   const downloadCard = async () => {
     const cardElement = document.getElementById('id-card')
-    if (cardElement) {
-      const canvas = await html2canvas(cardElement, {
-        backgroundColor: '#ffffff',
-        scale: 3,
-        useCORS: true,
-        allowTaint: true
-      })
+    if (!cardElement) {
+      alert('Card element not found!')
+      return
+    }
+
+    try {
+      console.log('Starting download process...')
       
+      // Pre-render profile image to ensure it's loaded
+      if (generatedCard?.profileImage) {
+        const img = await createImage(generatedCard.profileImage)
+        const tempCanvas = document.createElement('canvas')
+        tempCanvas.width = 160
+        tempCanvas.height = 160
+        tempCanvas.getContext('2d').drawImage(img, 0, 0, 160, 160)
+        console.log('Profile image pre-rendered:', img.width, 'x', img.height)
+      }
+
+      const images = cardElement.querySelectorAll('img')
+      await Promise.all(Array.from(images).map(img => new Promise(resolve => {
+        if (img.complete && img.naturalHeight !== 0) {
+          console.log('Image already loaded:', img.src)
+          resolve()
+        } else {
+          img.onload = () => {
+            console.log('Image loaded:', img.src)
+            resolve()
+          }
+          img.onerror = () => {
+            console.log('Image failed to load, using fallback:', img.src)
+            resolve()
+          }
+          if (img.src && !img.complete) {
+            img.src = img.src // Force reload
+          }
+        }
+      })))
+      console.log('All images loaded!')
+
+      // Ensure DOM is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 2500))
+
+      let canvas = null
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        console.log(`Rendering attempt ${attempt}...`)
+        canvas = await html2canvas(cardElement, {
+          backgroundColor: '#ffffff',
+          scale: 4,
+          useCORS: true,
+          allowTaint: true,
+          imageTimeout: 20000,
+          logging: true,
+          width: 600,
+          height: 380,
+          x: 0,
+          y: 0,
+          onclone: (clonedDoc) => {
+            const clonedImages = clonedDoc.querySelectorAll('img')
+            clonedImages.forEach(img => {
+              img.setAttribute('crossOrigin', 'anonymous')
+              img.style.display = 'block'
+              img.style.opacity = '1'
+              img.style.visibility = 'visible'
+              img.style.position = 'static'
+              img.style.zIndex = 'auto'
+            })
+            const clonedCard = clonedDoc.getElementById('id-card')
+            if (clonedCard) {
+              clonedCard.style.position = 'relative'
+              clonedCard.style.overflow = 'visible'
+              clonedCard.style.width = '600px'
+              clonedCard.style.height = '380px'
+            }
+          }
+        })
+
+        if (canvas.width > 0 && canvas.height > 0) {
+          break
+        }
+        console.log(`Attempt ${attempt} failed, retrying in 1s...`)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+
+      if (!canvas || canvas.width === 0 || canvas.height === 0) {
+        console.log('DOM structure:', cardElement.outerHTML)
+        throw new Error('Canvas rendering failed - check console for DOM')
+      }
+
+      console.log('Canvas created:', canvas.width, 'x', canvas.height)
       const link = document.createElement('a')
       link.download = `tiranga-id-${generatedCard.tirangaId}.png`
       link.href = canvas.toDataURL('image/png', 1.0)
+      document.body.appendChild(link)
       link.click()
+      document.body.removeChild(link)
+      console.log('Download completed!')
+    } catch (error) {
+      console.error('Download error:', error)
+      alert(`डाउनलोड विफल: ${error.message}. कंसोल में विवरण देखें | Download failed: ${error.message}. Check console for details.`)
     }
   }
 
@@ -161,7 +254,6 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
     
 यह भारत के लिए गर्व का क्षण है! 
 #TirangaID #DigitalIndia #ProudIndian`
-
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
@@ -170,7 +262,6 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
     <div className="container py-5">
       {!generatedCard ? (
         <>
-          {/* Government Notice */}
           <div className="govt-notice mb-4 fade-in">
             <div className="govt-notice-icon">🏛️</div>
             <p className="govt-notice-text">
@@ -180,7 +271,6 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
           </div>
 
           <div className="row g-4">
-            {/* Form Section */}
             <div className="col-lg-6">
               <div className="govt-card slide-up">
                 <div className="govt-card-header">
@@ -363,7 +453,6 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
               </div>
             </div>
 
-            {/* Preview Section */}
             <div className="col-lg-6">
               <div className="govt-card slide-up">
                 <div className="govt-card-header">
@@ -389,7 +478,6 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
           </div>
         </>
       ) : (
-        // Generated Card Display
         <div className="text-center fade-in">
           <div className="govt-success-container slide-up">
             <div className="govt-success-icon">🎉</div>
@@ -402,10 +490,9 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
           </div>
           
           <div className="row justify-content-center mb-5">
-            <div className="col-lg-6">
+            <div className="col-lg-8">
               <IDCardPreview 
                 userData={generatedCard}
-                qrCodeData={generatedCard.qrCodeData}
               />
             </div>
           </div>
@@ -417,6 +504,7 @@ ID संख्या | ID Number: ${generatedCard.tirangaId}
                   onClick={downloadCard}
                   className="btn govt-btn-info px-4 py-3"
                   style={{fontSize: '1.1rem'}}
+                  disabled={isLoading}
                 >
                   <i className="fas fa-download me-2"></i>
                   ID कार्ड डाउनलोड करें | Download ID Card
