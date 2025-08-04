@@ -1,0 +1,164 @@
+import React from 'react'
+
+const PrivacyPolicy = () => {
+  return (
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-10">
+          <div className="govt-card fade-in">
+            <div className="govt-card-header">
+              <h1 className="mb-0 text-white fw-bold">
+                <i className="fas fa-shield-alt me-3"></i>
+                गोपनीयता नीति | Privacy Policy
+              </h1>
+              <small className="text-white-50 d-block mt-2">
+                आपकी निजता हमारी प्राथमिकता है | Your Privacy is Our Priority
+              </small>
+            </div>
+            
+            <div className="p-5">
+              <div className="govt-notice mb-4">
+                <div className="govt-notice-icon">🔒</div>
+                <p className="govt-notice-text">
+                  <strong>महत्वपूर्ण सूचना:</strong> यह एक व्यक्तिगत/शैक्षणिक परियोजना है। 
+                  आपका डेटा सुरक्षित रूप से संग्रहीत किया जाता है।
+                </p>
+              </div>
+
+              <section className="mb-5">
+                <h2 className="h4 text-primary fw-bold mb-3">
+                  <i className="fas fa-database me-2"></i>
+                  डेटा संग्रह | Data Collection
+                </h2>
+                <p className="text-muted mb-3">
+                  जब आप तिरंगा ID बनाते हैं तो हम निम्नलिखित जानकारी एकत्र करते हैं:
+                </p>
+                <div className="row">
+                  <div className="col-md-6">
+                    <ul className="list-unstyled">
+                      <li className="mb-2">
+                        <i className="fas fa-check text-success me-2"></i>
+                        पूरा नाम | Full Name
+                      </li>
+                      <li className="mb-2">
+                        <i className="fas fa-check text-success me-2"></i>
+                        मोबाइल नंबर | Mobile Number
+                      </li>
+                      <li className="mb-2">
+                        <i className="fas fa-check text-success me-2"></i>
+                        शहर | City
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="col-md-6">
+                    <ul className="list-unstyled">
+                      <li className="mb-2">
+                        <i className="fas fa-check text-success me-2"></i>
+                        रक्त समूह | Blood Group
+                      </li>
+                      <li className="mb-2">
+                        <i className="fas fa-check text-success me-2"></i>
+                        भूमिका/पेशा | Role/Profession
+                      </li>
+                      <li className="mb-2">
+                        <i className="fas fa-check text-success me-2"></i>
+                        प्रोफाइल फोटो | Profile Photo
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section className="mb-5">
+                <h2 className="h4 text-primary fw-bold mb-3">
+                  <i className="fas fa-cogs me-2"></i>
+                  डेटा उपयोग | Data Usage
+                </h2>
+                <div className="alert alert-info border-0" style={{background: 'linear-gradient(135deg, #EBF8FF 0%, #DBEAFE 100%)'}}>
+                  <h5 className="alert-heading text-primary">
+                    <i className="fas fa-info-circle me-2"></i>
+                    हम क्या करते हैं | What We Do
+                  </h5>
+                  <p className="mb-0">आपका डेटा केवल आपके व्यक्तिगत तिरंगा ID कार्ड बनाने के लिए उपयोग किया जाता है।</p>
+                </div>
+                
+                <div className="alert alert-danger border-0 mt-3" style={{background: 'linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%)'}}>
+                  <h5 className="alert-heading text-danger">
+                    <i className="fas fa-times-circle me-2"></i>
+                    हम क्या नहीं करते | What We Don't Do
+                  </h5>
+                  <ul className="mb-0">
+                    <li>तीसरे पक्ष के साथ आपका डेटा साझा नहीं करते</li>
+                    <li>मार्केटिंग के लिए आपके डेटा का उपयोग नहीं करते</li>
+                    <li>किसी को भी आपकी जानकारी नहीं बेचते</li>
+                  </ul>
+                </div>
+              </section>
+
+              <section className="mb-5">
+                <h2 className="h4 text-primary fw-bold mb-3">
+                  <i className="fas fa-lock me-2"></i>
+                  डेटा सुरक्षा | Data Security
+                </h2>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="text-center p-3 border border-success rounded mb-3">
+                      <i className="fas fa-encrypt text-success mb-2" style={{fontSize: '2rem'}}></i>
+                      <h6 className="text-success">एन्क्रिप्शन</h6>
+                      <small className="text-muted">डेटा एन्क्रिप्ट करके स्टोर किया जाता है</small>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="text-center p-3 border border-warning rounded mb-3">
+                      <i className="fas fa-server text-warning mb-2" style={{fontSize: '2rem'}}></i>
+                      <h6 className="text-warning">सुरक्षित सर्वर</h6>
+                      <small className="text-muted">सुरक्षित सर्वर पर होस्ट किया गया</small>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="text-center p-3 border border-info rounded mb-3">
+                      <i className="fas fa-shield-alt text-info mb-2" style={{fontSize: '2rem'}}></i>
+                      <h6 className="text-info">फायरवॉल सुरक्षा</h6>
+                      <small className="text-muted">उन्नत सुरक्षा उपाय</small>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="mb-5">
+                <div className="alert alert-warning border-0" style={{background: 'linear-gradient(135deg, #FFFBEB 0%, #FED7AA 100%)'}}>
+                  <h4 className="alert-heading text-warning">
+                    <i className="fas fa-exclamation-triangle me-2"></i>
+                    महत्वपूर्ण अस्वीकरण | Important Disclaimer
+                  </h4>
+                  <hr className="border-warning">
+                  <p className="mb-0">
+                    <strong>यह एक व्यक्तिगत/शैक्षणिक परियोजना है</strong> जो डिजिटल पहचान पत्र बनाने के लिए मनोरंजन और व्यक्तिगत उपयोग के लिए है। 
+                    यह कोई आधिकारिक सरकारी दस्तावेज नहीं है और इसका उपयोग किसी भी आधिकारिक उद्देश्य के लिए नहीं किया जाना चाहिए।
+                  </p>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="h4 text-primary fw-bold mb-3">
+                  <i className="fas fa-envelope me-2"></i>
+                  संपर्क | Contact
+                </h2>
+                <div className="bg-light p-4 rounded">
+                  <p className="mb-0">
+                    यदि आपके पास इस गोपनीयता नीति के बारे में कोई प्रश्न है, तो कृपया हमारी वेबसाइट के माध्यम से हमसे संपर्क करें।<br/>
+                    <em className="text-muted">
+                      If you have any questions about this Privacy Policy, please contact us through our website.
+                    </em>
+                  </p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default PrivacyPolicy;
